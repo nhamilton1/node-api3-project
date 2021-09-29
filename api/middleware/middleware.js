@@ -9,13 +9,13 @@ function logger(req, res, next) {
 async function validateUserId(req, res, next) {
   try {
     const userIdCheck = await Users.getById(req.params.id)
-    if(userIdCheck){
+    if (userIdCheck) {
       req.user = userIdCheck
       next()
     } else {
       res.status(404).json({
-        status: 404, 
-        message: "user not found" 
+        status: 404,
+        message: "user not found"
       })
     }
   } catch (err) {
@@ -25,17 +25,18 @@ async function validateUserId(req, res, next) {
 
 const userSchema = yup.object().shape({
   name: yup
-  .string()
-  .typeError('name must be a string')
-  .trim()
-  .required('name is required')
-  .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
+    .string()
+    .typeError('name must be a string')
+    .trim()
+    .max(15)
+    .required('name is required')
+    .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
 })
 
 async function validateUser(req, res, next) {
   try {
     const validated = await userSchema.validate(
-      req.body, 
+      req.body,
       { strict: false, stripUnknown: true }
     )
     req.body = validated
@@ -47,9 +48,27 @@ async function validateUser(req, res, next) {
   }
 }
 
-function validatePost(req, res, next) {
-  // DO YOUR MAGIC
-  next()
+const postSchema = yup.object().shape({
+  text: yup
+    .string()
+    .typeError('name must be a string')
+    .required('name is required')
+    .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
+})
+
+async function validatePost(req, res, next) {
+  try {
+    const validatedPost = await postSchema.validate(
+      req.body,
+      { strict: false, stripUnknown: true }
+    )
+    req.body = validatedPost
+    next()
+  } catch (err) {
+    res.status(400).json({
+      message: "missing required text field" 
+    })
+  }
 }
 
 // do not forget to expose these functions to other modules
