@@ -2,7 +2,7 @@ const Users = require('../users/users-model')
 const yup = require('yup')
 
 function logger(req, res, next) {
-  console.log(`${req.method} request to ${req.originalUrl} at ${Date().toLocaleString()}`)
+  console.log(`${req.method} request to ${req.originalUrl} at ${new Date().toLocaleString()}`)
   next()
 }
 
@@ -51,9 +51,8 @@ async function validateUser(req, res, next) {
 const postSchema = yup.object().shape({
   text: yup
     .string()
-    .typeError('name must be a string')
-    .required('name is required')
-    .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
+    .typeError('text must be a string')
+    .required('text is required')
 })
 
 async function validatePost(req, res, next) {
@@ -62,7 +61,7 @@ async function validatePost(req, res, next) {
       req.body,
       { strict: false, stripUnknown: true }
     )
-    req.body = validatedPost
+    req.test = validatedPost
     next()
   } catch (err) {
     res.status(400).json({
