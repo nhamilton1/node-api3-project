@@ -29,8 +29,6 @@ const userSchema = yup.object().shape({
   .typeError('name must be a string')
   .trim()
   .required('name is required')
-  .min(3, 'name must be 3 chars long')
-  .max(10, 'name should be at most 10 chars tops')
   .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
 })
 
